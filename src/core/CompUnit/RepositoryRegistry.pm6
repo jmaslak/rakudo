@@ -332,7 +332,7 @@ class CompUnit::RepositoryRegistry {
         }
     }
 
-    sub short-id2class(Str:D $short-id) {
+    sub short-id2class(Str:D $short-id) is rw {
         state %short-id2class;
         state $lock = Lock.new;
 
