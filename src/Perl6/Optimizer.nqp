@@ -1132,7 +1132,7 @@ class Perl6::Optimizer {
 
         # Let's see if we can catch a type mismatch in assignment at compile-time.
         # Especially with Num, Rat, and Int there's often surprises at run-time.
-        if ($optype eq 'assign' || $optype eq 'assign_n' || $optype eq 'assign_i')
+        if ($optype eq 'p6assign' || $optype eq 'assign_n' || $optype eq 'assign_i')
             && nqp::istype($op[0], QAST::Var)
             && ($op[0].scope eq 'lexical' || $op[0].scope eq 'lexicalref') {
             if nqp::istype($op[1], QAST::Want) {
@@ -1913,7 +1913,7 @@ class Perl6::Optimizer {
                 $is-always-definite := 1;
               }
               elsif $sigil eq '$' {
-                $assignop := 'assign';
+                $assignop := 'p6assign';
               }
               else {
                 # TODO support @ and % sigils and check what else we need
@@ -1923,7 +1923,7 @@ class Perl6::Optimizer {
               $assignee := $assignee_var := $op[1];
             }
             else {
-              $assignop := "assign";
+              $assignop := "p6assign";
               # We want to be careful to only call $foo.bar once, if that's what
               # we have, so we bind to a local var and assign to that. The
               # var is also needed when we're unpacking a REVERSE op, since
@@ -1976,7 +1976,7 @@ class Perl6::Optimizer {
             }
 
             $op.returns: $assignee.returns
-                if $assignop ne 'assign'
+                if $assignop ne 'p6assign'
                 && nqp::objprimspec($assignee.returns);
 
             my $*NO-COMPILE-TIME-THROWAGE := 1;
