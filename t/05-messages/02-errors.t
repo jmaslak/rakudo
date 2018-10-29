@@ -16,13 +16,12 @@ throws-like { for [:a] X [:b] -> ($i, $j) { } },
     message => / '<anon>' /,
     "anonymous subs get '<anon>' in arity error messages";
 
-todo 'needs better error message';
 throws-like {
     sub l { IO::Socket::Async.listen: "localhost", 111390 }
     react whenever l() {
         whenever l() {} # try to listen on already open sock
     }
-}, X::AdHoc, message => /'something good'/;
+}, X::TypeCheck::Binding::Parameter, message => /'type check failed'/;
 
 # RT #132283
 is-deeply class { has $.bar }.^methods».name.sort, <BUILDALL bar>,
